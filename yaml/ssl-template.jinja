@@ -1,0 +1,13 @@
+resources:
+  - name: {{ properties["site-name"] }}-ssl
+    type: compute.v1.sslCertificate
+    properties:
+      type: MANAGED
+      managed:
+        domains:
+        - {{ properties["site-domain"] }}
+        - www.{{ properties["site-domain"] }}
+outputs:
+  - name: cert
+    value: $(ref.{{ properties["site-name"] }}-ssl.selfLink)
+

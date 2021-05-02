@@ -1,0 +1,14 @@
+resources:
+  - name: {{ properties["site-name"] }}-ipv4
+    type: compute.v1.globalAddress
+    properties:
+      ipVersion: IPV4
+  - name: {{ properties["site-name"] }}-ipv6
+    type: compute.v1.globalAddress
+    properties:
+      ipVersion: IPV6
+outputs:
+  - name: ipv4
+    value: $(ref.{{ properties["site-name"] }}-ipv4.address)
+  - name: ipv6
+    value: $(ref.{{ properties["site-name"] }}-ipv6.address)

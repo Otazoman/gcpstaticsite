@@ -1,0 +1,28 @@
+resources:
+  - name: log-{{ properties["site-name"] }}
+    type: gcp-types/storage-v1:buckets
+    properties:
+      predefinedAcl: projectPrivate
+      projection: full
+      location: asia-east2
+      storageClass: REGIONAL
+  - name: site-{{ properties["site-name"] }}
+    type: gcp-types/storage-v1:buckets
+    properties:
+      location: asia
+      locationType: multi-region
+      defaultObjectAcl:
+      - bucket: {{ properties["site-name"] }}
+        entity: allUsers
+        role: READER
+      website:
+        mainPageSuffix: index.html
+        notFoundPage : 404.html
+      logging:
+        logBucket: $(ref.log-{{ properties["site-name"] }}.name)
+        logObjectPrefix: {{ properties["site-name"] }}
+outputs:
+  - name: sitebucket
+    value: $(ref.site-{{ properties["site-name"] }}.name)
+  - name: logbucket
+    value: $(ref.log-{{ properties["site-name"] }}.name)

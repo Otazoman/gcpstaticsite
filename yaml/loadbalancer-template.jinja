@@ -1,0 +1,25 @@
+resources:
+  - name: {{ properties["site-name"] }}-http-urlmap
+    type: compute.v1.urlMap
+    properties:
+      defaultUrlRedirect:
+        httpsRedirect: true
+        redirectResponseCode: MOVED_PERMANENTLY_DEFAULT
+  - name: {{ properties["site-name"] }}-https-urlmap
+    type: compute.v1.urlMap
+    properties:
+      defaultService: {{ properties["backend-buckets"] }}
+      hostRules:
+      - hosts: ["*"]
+        pathMatcher: "allpaths"
+      pathMatchers:
+      - name: "allpaths"
+        defaultService: {{ properties["backend-buckets"] }}
+        pathRules:
+        - service: {{ properties["backend-buckets"] }}
+          paths: ["/*"]
+outputs:
+  - name: http
+    value: $(ref.{{ properties["site-name"] }}-http-urlmap.selfLink)
+  - name: https
+    value: $(ref.{{ properties["site-name"] }}-https-urlmap.selfLink)

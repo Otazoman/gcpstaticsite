@@ -1,0 +1,39 @@
+resources:
+  - name: {{ properties["site-name"] }}-http-proxy
+    type: compute.v1.targetHttpProxy
+    properties:
+      urlMap: {{ properties["http-urlmap"] }}
+  - name: {{ properties["site-name"] }}-https-proxy
+    type: compute.v1.targetHttpsProxy
+    properties:
+      urlMap: {{ properties["https-urlmap"] }}
+      sslCertificates:
+        - {{ properties["ssl-certificate"] }}
+  - name: lb-{{ properties["site-name"] }}-http-v4-forwardingrule
+    type: compute.v1.globalForwardingRule
+    properties:
+      target: $(ref.{{ properties["site-name"] }}-http-proxy.selfLink)
+      IPAddress: {{ properties["ipv4"] }}
+      IPProtocol: TCP
+      portRange: 80-80
+  - name: lb-{{ properties["site-name"] }}-http-v6-forwardingrule
+    type: compute.v1.globalForwardingRule
+    properties:
+      target: $(ref.{{ properties["site-name"] }}-http-proxy.selfLink)
+      IPAddress: {{ properties["ipv6"] }}
+      IPProtocol: TCP
+      portRange: 80-80
+  - name: lb-{{ properties["site-name"] }}-https-v4-forwardingrule
+    type: compute.v1.globalForwardingRule
+    properties:
+      target: $(ref.{{ properties["site-name"] }}-https-proxy.selfLink)
+      IPAddress: {{ properties["ipv4"] }}
+      IPProtocol: TCP
+      portRange: 443-443
+  - name: lb-{{ properties["site-name"] }}-https-v6-forwardingrule
+    type: compute.v1.globalForwardingRule
+    properties:
+      target: $(ref.{{ properties["site-name"] }}-https-proxy.selfLink)
+      IPAddress: {{ properties["ipv6"] }}
+      IPProtocol: TCP
+      portRange: 443-443

@@ -1,0 +1,49 @@
+resources:
+  - name:  {{ properties["site-name"] }}-dnszone
+    type: gcp-types/dns-v1:managedZones
+    properties:
+      description: StaticSiteSample
+      dnsName:  {{ properties["site-domain"] }}.
+      dnssecConfig.state: on
+  - name: {{ properties["site-name"] }}-naked-a-record
+    type: gcp-types/dns-v1:resourceRecordSets
+    properties:
+      name: tohonokai.cf.
+      managedZone: $(ref.{{ properties["site-name"] }}-dnszone.name)
+      records:
+      - name: {{ properties["site-domain"] }}.
+        type: A
+        ttl: 300
+        rrdatas:
+        - {{ properties["static-ip-v4-addr"] }}
+  - name: {{ properties["site-name"] }}-www-a-record
+    type: gcp-types/dns-v1:resourceRecordSets
+    properties:
+      name: www.{{ properties["site-domain"] }}.
+      managedZone: $(ref.{{ properties["site-name"] }}-dnszone.name)
+      records:
+      - type: A
+        ttl: 300
+        rrdatas:
+        - {{ properties["static-ip-v4-addr"] }}
+  - name: {{ properties["site-name"] }}-naked-aaaa-record
+    type: gcp-types/dns-v1:resourceRecordSets
+    properties:
+      name: tohonokai.cf.
+      managedZone: $(ref.{{ properties["site-name"] }}-dnszone.name)
+      records:
+      - name: {{ properties["site-domain"] }}.
+        type: AAAA
+        ttl: 300
+        rrdatas:
+        - {{ properties["static-ip-v6-addr"] }}
+  - name: {{ properties["site-name"] }}-www-aaaa-record
+    type: gcp-types/dns-v1:resourceRecordSets
+    properties:
+      name: www.{{ properties["site-domain"] }}.
+      managedZone: $(ref.{{ properties["site-name"] }}-dnszone.name)
+      records:
+      - type: AAAA
+        ttl: 300
+        rrdatas:
+        - {{ properties["static-ip-v6-addr"] }}

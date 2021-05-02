@@ -1,0 +1,48 @@
+imports:
+ - path: ipaddress-template.jinja
+ - path: dns-template.jinja
+ - path: ssl-template.jinja
+ - path: storage-template.jinja
+ - path: backendbuckets-template.jinja
+ - path: loadbalancer-template.jinja
+ - path: httpproxies-template.jinja
+
+resources:
+ - name: ipaddress
+   type: ipaddress-template.jinja
+   properties:
+     site-name: SITENAME
+ - name: dnsrecords
+   type: dns-template.jinja
+   properties:
+     site-name: SITENAME
+     site-domain: DOMAIN
+     static-ip-v4-addr: $(ref.ipaddress.ipv4)
+     static-ip-v6-addr: $(ref.ipaddress.ipv6)
+ - name: sslcertificates
+   type: ssl-template.jinja
+   properties:
+     site-name: SITENAME
+     site-domain: DOMAIN
+ - name: storagebucket
+   type: storage-template.jinja
+   properties:
+     site-name: SITENAME
+ - name: backendbuckets
+   type: backendbuckets-template.jinja
+   properties:
+     site-name: SITENAME
+ - name: loadbalancer
+   type: loadbalancer-template.jinja
+   properties:
+     backend-buckets: $(ref.backendbuckets.backend)
+     site-name: SITENAME
+ - name: httpproxies
+   type: httpproxies-template.jinja
+   properties:
+     site-name: SITENAME
+     ssl-certificate: $(ref.sslcertificates.cert)
+     http-urlmap: $(ref.loadbalancer.http)
+     https-urlmap: $(ref.loadbalancer.https)
+     ipv4: $(ref.ipaddress.ipv4)
+     ipv6: $(ref.ipaddress.ipv6)

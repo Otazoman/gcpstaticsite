@@ -1,0 +1,8 @@
+resources:
+  - name: {{ properties["site-name"] }}-backend
+    type: compute.beta.backendBucket
+    properties:
+      bucketName: $(ref.site-{{ properties["site-name"] }}.name)
+outputs:
+  - name: backend
+    value: $(ref.{{ properties["site-name"] }}-backend.selfLink)
